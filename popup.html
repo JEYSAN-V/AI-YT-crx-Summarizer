@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Summarizer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 450px;
+            height: 100vh;
+            box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+            background: #f4f4f4;
+            overflow: hidden;
+        }
+
+        .container {
+            padding: 20px;
+            background: #fff;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #333;
+        }
+
+        #video-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        #video-title {
+            font-size: 16px;
+            color: #555;
+        }
+
+        #video-thumbnail img {
+            width: 80px;
+            height: 80px;
+            border-radius: 5px;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 15px;
+        }
+
+        .tab-btn {
+            padding: 10px 15px;
+            border: none;
+            background: #28a745;
+            color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .tab-btn.active {
+            background: #218838;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .controls {
+            margin-bottom: 15px;
+        }
+
+        .primary-btn {
+            padding: 10px 20px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .primary-btn:hover {
+            background: #0056b3;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .chat-messages {
+            max-height: 250px;
+            overflow-y: auto;
+            background: #f1f1f1;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+        }
+
+        textarea {
+            width: calc(100% - 100px);
+            padding: 10px;
+            resize: none;
+        }
+
+        .export-section {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        .secondary-btn {
+            padding: 8px 16px;
+            background: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .secondary-btn:hover {
+            background: #5a6268;
+        }
+
+        .content-box {
+            background: #f9f9f9;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    .tab-btn {
+        margin-right: 5px;  /* Added spacing between buttons */
+    }
+
+    .chat-input button {
+        margin-left: 10px;  /* Added spacing between textarea and button */
+    }
+
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>YouTube Video Summarizer</h1>
+        <div id="video-info">
+            <div id="video-title">No YouTube video detected</div>
+            <div id="video-thumbnail"></div>
+        </div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="transcription">🎙️ Transcription</button>
+        <button class="tab-btn" data-tab="summary">📝 Summary</button>
+        <button class="tab-btn" data-tab="highlights">🔥 Highlights</button>
+        <button class="tab-btn" data-tab="mindmap">🧠 Mind Map</button>
+        <button class="tab-btn" data-tab="qa">💬 Q&A</button>
+    </div>
+
+    <div class="tab-content active" id="transcription">
+        <div class="controls">
+            <button id="start-transcription" class="primary-btn">Start Transcription</button>
+        </div>
+        <div id="transcript-content" class="content-box"></div>
+    </div>
+
+    <div class="tab-content" id="summary">
+        <div class="controls">
+            <button id="generate-summary" class="primary-btn">Generate Summary</button>
+        </div>
+        <div id="summary-content" class="content-box"></div>
+    </div>
+
+    <div class="tab-content" id="highlights">
+        <div class="controls">
+            <button id="extract-highlights" class="primary-btn">Extract Highlights</button>
+        </div>
+        <div id="highlights-content" class="content-box"></div>
+    </div>
+
+    <div class="tab-content" id="mindmap">
+        <div class="controls">
+            <button id="generate-mindmap" class="primary-btn">Generate Mind Map</button>
+        </div>
+        <div id="mindmap-content" class="content-box"></div>
+    </div>
+
+    <div class="tab-content" id="qa">
+        <div class="chat-container">
+            <div id="chat-messages" class="chat-messages"></div>
+            <div class="chat-input">
+                <textarea id="question-input" placeholder="Ask a question..."></textarea>
+                <button id="send-question" class="primary-btn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="export-section">
+        <button id="export-pdf" class="secondary-btn">Export as PDF</button>
+        <button id="export-txt" class="secondary-btn">Export as TXT</button>
+    </div>
+</div>
+
+<script src="popup.js"></script>
+
+</body>
+</html>
