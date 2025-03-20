@@ -9,8 +9,8 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            width: 450px;
-            height: 100vh;
+            width: 500px;
+            height: 120vh;
             box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
             background: #f4f4f4;
             overflow: hidden;
@@ -148,7 +148,8 @@
             overflow-y: auto;
         }
     .tab-btn {
-        margin-right: 5px;  /* Added spacing between buttons */
+        margin-right: 5px;
+        height: 55px;
     }
 
     .chat-input button {
@@ -172,7 +173,6 @@
     <div class="tabs">
         <button class="tab-btn active" data-tab="transcription">🎙️ Transcription</button>
         <button class="tab-btn" data-tab="summary">📝 Summary</button>
-        <button class="tab-btn" data-tab="highlights">🔥 Highlights</button>
         <button class="tab-btn" data-tab="mindmap">🧠 Mind Map</button>
         <button class="tab-btn" data-tab="qa">💬 Q&A</button>
     </div>
@@ -189,13 +189,6 @@
             <button id="generate-summary" class="primary-btn">Generate Summary</button>
         </div>
         <div id="summary-content" class="content-box"></div>
-    </div>
-
-    <div class="tab-content" id="highlights">
-        <div class="controls">
-            <button id="extract-highlights" class="primary-btn">Extract Highlights</button>
-        </div>
-        <div id="highlights-content" class="content-box"></div>
     </div>
 
     <div class="tab-content" id="mindmap">

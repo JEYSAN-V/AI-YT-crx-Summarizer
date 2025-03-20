@@ -39,29 +39,60 @@ function checkCurrentTab() {
 
 // Function to start transcription (mock function)
 function startTranscription() {
-  document.getElementById("transcript-content").textContent = "Transcription in progress... (Feature not implemented yet)";
-}
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const currentTab = tabs[0];
 
+      if (currentTab && isYouTubeVideoUrl(currentTab.url)) {
+          fetch("http://localhost:5000/transcript", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ link: currentTab.url }),  // Send actual YouTube URL
+          })
+          .then((response) => response.json())
+          .then((data) => {
+              document.getElementById("transcript-content").textContent = data.transcript || "No transcript available.";
+          })
+          .catch((err) => {
+              console.error("Error:", err);
+              document.getElementById("transcript-content").textContent = "Failed to fetch transcript.";
+          });
+      } else {
+          alert("No YouTube video detected.");
+      }
+  });
+}
+document.getElementById("start-transcription").addEventListener("click", startTranscription);
 // Function to generate the summary
 function generateSummary() {
-  const currentTabUrl = document.getElementById("video-title").textContent;
-  
-  if (!isYouTubeVideoUrl(currentTabUrl)) {
-      alert("No YouTube video detected.");
-      return;
-  }
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const currentTab = tabs[0];
 
-  fetch("http://localhost:5000/summarize", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ link: currentTabUrl }),
-  })
-  .then((response) => response.json())
-  .then((data) => {
-      document.getElementById("summary-content").textContent = data.overview || "No summary available.";
-  })
-  .catch((err) => console.error("Error:", err));
+      if (currentTab && isYouTubeVideoUrl(currentTab.url)) {
+          fetch("http://localhost:5000/summarize", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ link: currentTab.url }),
+          })
+          .then((response) => response.json())
+          .then((data) => {
+              document.getElementById("summary-content").innerHTML = `
+                  <h3>Overview:</h3>
+                  <p>${data.overview || "No overview available."}</p>
+                  <h3>Detailed Summary:</h3>
+                  <p>${data.detailed_summary || "No detailed summary available."}</p>
+              `;
+          })
+          .catch((err) => {
+              console.error("Error:", err);
+              document.getElementById("summary-content").textContent = "Failed to fetch summary.";
+          });
+      } else {
+          alert("No YouTube video detected.");
+      }
+  });
 }
+
+document.getElementById("generate-summary").addEventListener("click", generateSummary);
 
 // Function to handle Q&A with chat history
 function askQuestion() {
@@ -131,3 +162,94 @@ document.querySelectorAll('.tab-btn').forEach(button => {
       if (activeTab) activeTab.classList.add('active');
   });
 });
+
+
+// Function to fetch and display Mind Map
+function generateMindMap() {
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const currentTab = tabs[0];
+
+      if (currentTab && currentTab.url.includes("youtube.com")) {
+          fetch("http://localhost:5000/mindmap", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ link: currentTab.url }),
+          })
+          .then((response) => response.json())
+          .then((data) => {
+              drawMindMap(data);
+          })
+          .catch((err) => {
+              console.error("Error:", err);
+              alert("Failed to generate mind map.");
+          });
+      } else {
+          alert("No YouTube video detected.");
+      }
+  });
+}
+
+// Function to draw the Mind Map with D3.js
+function drawMindMap(data) {
+  const svg = d3.select("#mindmap-content").html("").append("svg")
+      .attr("width", 500)
+      .attr("height", 400);
+
+  const g = svg.append("g").attr("transform", "translate(40,40)");
+
+  const treeLayout = d3.tree().size([400, 300]);
+  const root = d3.hierarchy(data);
+  treeLayout(root);
+
+  g.selectAll(".link")
+      .data(root.links())
+      .enter()
+      .append("line")
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y)
+      .attr("stroke", "#555");
+
+  g.selectAll(".node")
+      .data(root.descendants())
+      .enter()
+      .append("circle")
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y)
+      .attr("r", 10)
+      .attr("fill", "#28a745");
+}
+
+// PDF Export
+function exportPDF() {
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      const currentTab = tabs[0];
+
+      if (currentTab && currentTab.url.includes("youtube.com")) {
+          fetch("http://localhost:5000/export-pdf", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ link: currentTab.url }),
+          })
+          .then((response) => response.blob())
+          .then((blob) => {
+              const url = window.URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = "youtube_summary.pdf";
+              a.click();
+              window.URL.revokeObjectURL(url);
+          })
+          .catch((err) => {
+              console.error("Error:", err);
+              alert("Failed to export PDF.");
+          });
+      } else {
+          alert("No YouTube video detected.");
+      }
+  });
+}
+
+document.getElementById("generate-mindmap").addEventListener("click", generateMindMap);
+document.getElementById("export-pdf").addEventListener("click", exportPDF);

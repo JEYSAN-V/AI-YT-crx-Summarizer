@@ -1,13 +1,16 @@
 altgraph==0.17.4
 annotated-types==0.7.0
+beautifulsoup4==4.13.3
 blinker==1.9.0
 cachetools==5.5.2
 certifi==2025.1.31
+chardet==5.2.0
 charset-normalizer==3.4.1
 click==8.1.8
 colorama==0.4.6
 defusedxml==0.7.1
 Flask==3.1.0
+fpdf==1.7.2
 google-ai-generativelanguage==0.6.15
 google-api-core==2.24.2
 google-api-python-client==2.165.0
@@ -24,6 +27,7 @@ Jinja2==3.1.6
 MarkupSafe==3.0.2
 packaging==24.2
 pefile==2023.2.7
+pillow==11.1.0
 proto-plus==1.26.1
 protobuf==5.29.4
 pyasn1==0.6.1
@@ -35,9 +39,11 @@ pyinstaller-hooks-contrib==2025.1
 pyparsing==3.2.1
 python-dotenv==1.0.1
 pywin32-ctypes==0.2.3
+reportlab==4.3.1
 requests==2.32.3
 rsa==4.9
 setuptools==77.0.1
+soupsieve==2.6
 tqdm==4.67.1
 typing_extensions==4.12.2
 uritemplate==4.1.1
